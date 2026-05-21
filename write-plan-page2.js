@@ -1,6 +1,8 @@
-'use client'
+const fs = require('fs')
 
-import React, { useEffect, useState } from 'react'
+const content = `'use client'
+
+import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -44,12 +46,11 @@ const categoryColors: Record<string, string> = {
   cooldown: 'bg-neutral-50 text-neutral-600 border-neutral-200',
 }
 
-export default function PlanPage({ params }: { params: Promise<{ id: string }> }) {
+export default function PlanPage({ params }: { params: { id: string } }) {
   const [plan, setPlan] = useState<Plan | null>(null)
   const [openDay, setOpenDay] = useState<number>(1)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)
-  const resolvedParams = React.use(params)
 
   useEffect(() => {
     async function loadPlan() {
@@ -60,7 +61,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         return
       }
 
-      const id = resolvedParams.id
+      const id = params.id
       if (id && !id.startsWith('plan_')) {
         const { data, error } = await supabase
           .from('practice_plans')
@@ -75,7 +76,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       setLoading(false)
     }
     loadPlan()
-  }, [resolvedParams.id])
+  }, [params.id])
 
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
@@ -153,7 +154,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <div className="font-medium text-sm text-[#1E2A3A]">{exercise.name}</div>
                           <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className={`text-xs px-2 py-0.5 rounded border font-medium ${categoryColors[exercise.category] || 'bg-neutral-50 text-neutral-600 border-neutral-200'}`}>{exercise.category}</span>
+                            <span className={\`text-xs px-2 py-0.5 rounded border font-medium \${categoryColors[exercise.category] || 'bg-neutral-50 text-neutral-600 border-neutral-200'}\`}>{exercise.category}</span>
                             <span className="text-xs text-neutral-400">{exercise.duration_minutes}m</span>
                           </div>
                         </div>
@@ -179,4 +180,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       </div>
     </div>
   )
-}
+}`
+
+fs.writeFileSync('app/plan/[id]/page.tsx', content)
+console.log('Done! Lines:', content.split('\n').length)
