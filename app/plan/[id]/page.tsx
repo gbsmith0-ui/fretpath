@@ -77,6 +77,28 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     loadPlan()
   }, [resolvedParams.id])
 
+  
+  async function downloadPlan() {
+    try {
+      const response = await fetch('/api/export-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      })
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'fretpath-practice-plan.txt'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Download failed:', err)
+    }
+  }
+
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopied(true)
@@ -117,9 +139,12 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
               <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-1">Your Practice Plan</div>
               <h1 className="text-xl font-bold text-[#1E2A3A]">{plan.plan_title}</h1>
             </div>
+            <div className="flex gap-2">
+            <button onClick={downloadPlan} className="text-xs bg-[#1E2A3A] text-[#D4890A] px-3 py-1.5 rounded-md hover:bg-[#162030] transition-colors whitespace-nowrap">Download plan</button>
             <button onClick={copyLink} className="text-xs border border-neutral-200 px-3 py-1.5 rounded-md text-neutral-500 hover:border-neutral-400 transition-colors whitespace-nowrap">
               {copied ? 'Copied!' : 'Share link'}
             </button>
+            </div>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
             <span className="text-xs bg-[#1E2A3A]/10 text-[#1E2A3A] px-2 py-1 rounded font-medium">{plan.genre}</span>
