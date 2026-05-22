@@ -66,6 +66,17 @@ export async function POST(req: NextRequest) {
       .from("email_subscribers")
       .upsert({ email: email, source: "quiz" }, { onConflict: "email" })
 
+    
+    try {
+      await fetch(process.env.NEXT_PUBLIC_APP_URL + "/api/send-plan-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, plan: planData }),
+      })
+    } catch (emailErr) {
+      console.error("Email send failed:", emailErr)
+    }
+
     return NextResponse.json({ planId, plan: planData, email })
 
   } catch (error) {
