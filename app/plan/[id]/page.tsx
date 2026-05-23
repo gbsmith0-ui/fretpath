@@ -99,6 +99,23 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     }
   }
 
+  
+  async function handleCheckout() {
+    try {
+      const response = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId: resolvedParams.id }),
+      })
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (err) {
+      console.error('Checkout failed:', err)
+    }
+  }
+
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopied(true)
@@ -199,7 +216,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
           <div className="text-[#D4890A] font-semibold mb-1">Want 4 weeks of plans like this?</div>
           <p className="text-white/60 text-sm mb-4">Get a full 30-day structured practice pack as a printable PDF for $19.</p>
-          <a href="/checkout" className="inline-block bg-[#D4890A] text-[#1E2A3A] font-semibold px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors text-sm">Get the 30-day pack</a>
+          <button onClick={handleCheckout} className="inline-block bg-[#D4890A] text-[#1E2A3A] font-semibold px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors text-sm">Get the 30-day pack</button>
         </div>
       </div>
     </div>
