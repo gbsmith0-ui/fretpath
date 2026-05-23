@@ -1,4 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk"
+const fs = require('fs')
+
+const content = `import Anthropic from "@anthropic-ai/sdk"
 import { createClient } from "@supabase/supabase-js"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -32,7 +34,7 @@ export async function POST(req: NextRequest) {
     const content_block = message.content[0]
     if (content_block.type !== "text") throw new Error("Unexpected response type")
 
-    const cleaned = content_block.text.replace(/```json/g, "").replace(/```/g, "").trim()
+    const cleaned = content_block.text.replace(/\`\`\`json/g, "").replace(/\`\`\`/g, "").trim()
 
     let planData
     try {
@@ -83,4 +85,7 @@ export async function POST(req: NextRequest) {
     console.error("Generate plan error:", message)
     return NextResponse.json({ error: message }, { status: 500 })
   }
-}
+}`
+
+fs.writeFileSync('app/api/generate-plan/route.ts', content)
+console.log('Done! Lines:', content.split('\n').length)
