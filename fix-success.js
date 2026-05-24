@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs')
+
+const content = `'use client'
 
 import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -76,4 +78,7 @@ export default function SuccessPage() {
       <SuccessContent />
     </Suspense>
   )
-}
+}`
+
+fs.writeFileSync('app/purchase/success/page.tsx', content)
+console.log('Done! Lines:', content.split('\n').length)
