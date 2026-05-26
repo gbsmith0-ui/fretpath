@@ -148,7 +148,10 @@ function Pricing() {
           </div>
           <div className="rounded-xl border-2 border-[#1E2A3A] bg-[#1E2A3A] p-6 flex flex-col">
             <div className="text-xs font-semibold text-[#D4890A]/60 uppercase tracking-wider mb-2">30-Day Pack</div>
-            <div className="text-4xl font-bold text-[#D4890A] mb-1">$19</div>
+            <div className="flex items-baseline gap-2 mb-1">
+  <span className="text-lg text-white/40 line-through">$29</span>
+  <span className="text-4xl font-bold text-[#D4890A]">$19</span>
+</div>
             <p className="text-sm text-white/60 mb-6">One-time payment. A full month of structured practice, delivered instantly.</p>
             <ul className="space-y-3 mb-8 flex-1">
               {packFeatures.map((f) => (
