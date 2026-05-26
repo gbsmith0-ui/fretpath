@@ -158,7 +158,7 @@ function Pricing() {
                 <li key={f} className="flex items-start gap-2 text-sm text-white/80"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />{f}</li>
               ))}
             </ul>
-            <a href="/checkout" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Get the 30-day pack</a>
+            <a href="/quiz" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Get the 30-day pack</a>
           </div>
         </div>
         <p className="text-center text-xs text-neutral-400 mt-8">Monthly subscription plans coming soon. Lock in founding member pricing with a pack today.</p>
