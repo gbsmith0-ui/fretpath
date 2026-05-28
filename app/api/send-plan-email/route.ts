@@ -5,14 +5,14 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, plan } = await req.json()
+    const { email, plan, planId } = await req.json()
 
     if (!email || !plan) {
       return NextResponse.json({ error: "Missing email or plan" }, { status: 400 })
     }
 
     const daysSummary = plan.days.map((day: any) =>
-      "<li style='margin-bottom:8px'><strong>" + day.day_name + "</strong> — " + day.focus + " (" + day.total_minutes + " min)</li>"
+      "<li style='margin-bottom:8px'><strong>" + day.day_name + "</strong> - " + day.focus + " (" + day.total_minutes + " min)</li>"
     ).join("")
 
     const emailHtml = `
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
   <div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
     <h3 style="color: #1E2A3A; margin-top: 0;">Want 4 weeks of plans like this?</h3>
     <p style="color: #1E2A3A99; font-size: 14px; margin-bottom: 16px;">Get a full 30-day structured practice pack for just $19.</p>
-    <a href="https://fretpath-sage.vercel.app/checkout" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Get the 30-day pack</a>
+    <a href="https://fretpath-sage.vercel.app/plan/${planId}" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Get the 30-day pack</a>
   </div>
 
   <p style="color: #999; font-size: 12px; text-align: center;">FretPath — Built for real guitarists<br>

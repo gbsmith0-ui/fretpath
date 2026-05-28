@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
       await fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-one.vercel.app") + "/api/send-plan-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, plan: planData }),
+        body: JSON.stringify({ email, plan: planData, planId }),
       })
     } catch (emailErr) {
       console.error("Email send failed:", emailErr)
