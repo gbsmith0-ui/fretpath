@@ -37,22 +37,22 @@ function SuccessContent() {
           </div>
           <h1 className="text-2xl font-bold text-[#1E2A3A] mb-3">You are all set!</h1>
           <p className="text-neutral-600 text-sm leading-relaxed mb-8">
-            Your 30-day practice pack is confirmed. Check your email for your first week plan and we will send the remaining weeks over the coming days.
+            Your purchase is confirmed. We are building out the full 30-day pack experience and will be in touch shortly with next steps.
           </p>
           <div className="bg-white rounded-xl border border-neutral-200 p-6 mb-6 text-left">
             <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-3">What happens next</div>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 rounded-full bg-[#D4890A] text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
-                <p className="text-sm text-neutral-600">Check your email for your Week 1 practice plan</p>
+                <p className="text-sm text-neutral-600">We will be in touch with your content shortly</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 rounded-full bg-[#D4890A] text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
-                <p className="text-sm text-neutral-600">Practice for 7 days and track your progress</p>
+                <p className="text-sm text-neutral-600">In the meantime, generate a free 7-day plan below</p>
               </div>
               <div className="flex items-start gap-3">
                 <div className="w-5 h-5 rounded-full bg-[#D4890A] text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
-                <p className="text-sm text-neutral-600">Weeks 2, 3, and 4 will build on what you learned</p>
+                <p className="text-sm text-neutral-600">Full 30-day content is coming — thank you for your patience</p>
               </div>
             </div>
           </div>

@@ -1,4 +1,13 @@
-import { Clock, CreditCard, Music, Check, TrendingUp, SlidersHorizontal, ListChecks, Mail } from 'lucide-react'
+import {
+  Clock,
+  CreditCard,
+  Music,
+  Check,
+  TrendingUp,
+  SlidersHorizontal,
+  ListChecks,
+  Mail,
+} from 'lucide-react'
 
 function Nav() {
   return (
@@ -7,7 +16,7 @@ function Nav() {
         <div className="bg-[#1E2A3A] text-[#D4890A] font-semibold text-lg px-4 py-1.5 rounded-md tracking-tight">FretPath</div>
         <div className="hidden md:flex items-center gap-8">
           <a href="#how-it-works" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">How it works</a>
-          <a href="#pricing" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">Pricing</a>
+          <a href="#whats-coming" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">What's Coming</a>
           <a href="/sign-in" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">Sign in</a>
         </div>
         <a href="/quiz" className="bg-[#D4890A] text-[#1E2A3A] text-sm font-semibold px-5 py-2 rounded-md hover:bg-[#c07a09] transition-colors">Get my free plan</a>
@@ -26,7 +35,7 @@ function Hero() {
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-24 text-center">
       <div className="inline-block text-xs font-semibold text-[#D4890A] tracking-widest uppercase mb-4">AI-powered guitar practice</div>
-      <h1 className="text-4xl sm:text-5xl font-bold text-[#1E2A3A] leading-tight mb-5">Know exactly what to practice. Every single day.</h1>
+      <h1 className="text-4xl sm:text-5xl font-bold text-[#1E2A3A] leading-tight mb-5">Know exactly what to practice.<br className="hidden sm:block" /> Every single day.</h1>
       <p className="text-lg text-neutral-600 max-w-xl mx-auto mb-8 leading-relaxed">Stop guessing, stop scrolling YouTube, stop wasting your 20 minutes. FretPath builds a personalized daily routine around your schedule, your gear, and your goals in under 2 minutes.</p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
         <a href="/quiz" className="w-full sm:w-auto bg-[#D4890A] text-[#1E2A3A] font-semibold text-base px-8 py-3.5 rounded-md hover:bg-[#c07a09] transition-colors">Build my free practice plan</a>
@@ -53,7 +62,7 @@ function Hero() {
 const valueProps = [
   { icon: ListChecks, title: 'Structured, not random', body: 'No more guessing what to play. Get a clear daily routine built around your skill level, your time, and what you actually want to learn.' },
   { icon: SlidersHorizontal, title: 'Built for your gear', body: 'Exercises tailored to your guitar type and amp. Blues on a Telecaster requires different technique cues than a Les Paul through a stack.' },
-  { icon: TrendingUp, title: 'Feel progress weekly', body: 'Week 2 builds on Week 1. Your plan evolves as you improve. You will hear yourself getting better and that feeling keeps you coming back.' },
+  { icon: TrendingUp, title: 'Feel progress weekly', body: "Week 2 builds on Week 1. Your plan evolves as you improve. You'll hear yourself getting better and that feeling keeps you coming back." },
 ]
 
 function ValueProps() {
@@ -76,8 +85,8 @@ function ValueProps() {
 
 const steps = [
   { number: '1', title: 'Tell us about yourself', body: '7 quick questions about your practice time, goals, genre preferences, and gear. No music theory required.' },
-  { number: '2', title: 'AI builds your plan', body: 'A structured 7-day practice routine generated in seconds with exercises in the right order, right duration, and right difficulty for exactly where you are.' },
-  { number: '3', title: 'Practice with purpose', body: 'Follow your plan online or download the printable PDF. Know exactly what to do every day. No decisions, no wasted time.' },
+  { number: '2', title: 'AI builds your plan', body: 'A structured 7-day practice routine is generated in seconds with exercises in the right order, right duration, and right difficulty for exactly where you are.' },
+  { number: '3', title: 'Practice with purpose', body: 'Follow your plan online or download it. Know exactly what to do every day. No decisions, no wasted time.' },
 ]
 
 const samplePlan = [
@@ -125,43 +134,57 @@ function HowItWorks() {
   )
 }
 
-const freeFeatures = ['1 personalized 7-day plan', 'Online plan viewer', 'Email delivery']
-const packFeatures = ['4 AI-generated weekly plans', 'Printable PDF download', 'Genre-specific exercises', 'Gear-tuned recommendations', 'Priority email support']
+const freeFeatures = [
+  '1 personalized 7-day plan',
+  'Online plan viewer',
+  'Email delivery',
+  'Download your plan',
+]
 
 function Pricing() {
   return (
-    <section id="pricing" className="bg-white border-y border-neutral-200 py-16">
+    <section id="whats-coming" className="bg-white border-y border-neutral-200 py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#1E2A3A] text-center mb-3">Simple, honest pricing</h2>
-        <p className="text-neutral-500 text-center mb-12 text-sm">Start free. Upgrade when you want a full month of structured practice.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
-          <div className="rounded-xl border border-neutral-200 p-6 flex flex-col">
-            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Free</div>
-            <div className="text-4xl font-bold text-[#1E2A3A] mb-1">$0</div>
-            <p className="text-sm text-neutral-500 mb-6">Get started with one AI practice plan. No account needed.</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#1E2A3A] text-center mb-3">What's Coming</h2>
+        <p className="text-neutral-500 text-center mb-12 text-sm">FretPath is free right now. Paid plans are in development — try the free plan to be first in line.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+          <div className="rounded-xl border-2 border-[#1E2A3A] bg-[#1E2A3A] p-6 flex flex-col">
+            <div className="text-xs font-semibold text-[#D4890A]/70 uppercase tracking-wider mb-2">Available Now</div>
+            <div className="text-3xl font-bold text-[#D4890A] mb-1">Free</div>
+            <p className="text-sm text-white/60 mb-6">Your personalized 7-day practice plan. No card, no account required.</p>
             <ul className="space-y-3 mb-8 flex-1">
               {freeFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-2 text-sm text-neutral-600"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />{f}</li>
-              ))}
-            </ul>
-            <a href="/quiz" className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-700 hover:bg-neutral-50 transition-colors mt-auto">Get my free plan</a>
-          </div>
-          <div className="rounded-xl border-2 border-[#1E2A3A] bg-[#1E2A3A] p-6 flex flex-col">
-            <div className="text-xs font-semibold text-[#D4890A]/60 uppercase tracking-wider mb-2">30-Day Pack</div>
-            <div className="flex items-baseline gap-2 mb-1">
-  <span className="text-lg text-white/40 line-through">$29</span>
-  <span className="text-4xl font-bold text-[#D4890A]">$19</span>
-</div>
-            <p className="text-sm text-white/60 mb-6">One-time payment. A full month of structured practice, delivered instantly.</p>
-            <ul className="space-y-3 mb-8 flex-1">
-              {packFeatures.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm text-white/80"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />{f}</li>
               ))}
             </ul>
-            <a href="/quiz" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Get the 30-day pack</a>
+            <a href="/quiz" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Get my free plan</a>
+          </div>
+          <div className="rounded-xl border border-neutral-200 p-6 flex flex-col bg-[#F8F6F2]">
+            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">In Development</div>
+            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">30-Day Pack</div>
+            <p className="text-sm text-neutral-500 mb-6">Four weeks of AI-generated plans that build on each other, emailed weekly.</p>
+            <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>4 progressive weekly plans</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Genre-specific progressions</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Amp-specific tone guidance</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Printable PDF each week</li>
+            </ul>
+            <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
+          </div>
+          <div className="rounded-xl border border-neutral-200 p-6 flex flex-col bg-[#F8F6F2]">
+            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">In Development</div>
+            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">Monthly Plans</div>
+            <p className="text-sm text-neutral-500 mb-6">A new personalized plan every week, plus streak tracking and progress over time.</p>
+            <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Unlimited AI plan generation</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Streak and progress tracking</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Genre-specific learning paths</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Saved plan history</li>
+            </ul>
+            <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
           </div>
         </div>
-        <p className="text-center text-xs text-neutral-400 mt-8">Monthly subscription plans coming soon. Lock in founding member pricing with a pack today.</p>
+        <p className="text-center text-xs text-neutral-400 mt-8">Monthly plans and a 30-day pack are in development. Try the free 7-day plan to be first in line.</p>
       </div>
     </section>
   )
