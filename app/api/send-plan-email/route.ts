@@ -47,10 +47,10 @@ export async function POST(req: NextRequest) {
     <p style="color: #ffffffcc; font-size: 14px; line-height: 1.6; margin-bottom: 0;">${plan.weekly_goal}</p>
   </div>
 
-  <div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
-    <h3 style="color: #1E2A3A; margin-top: 0;">Want 4 weeks of plans like this?</h3>
-    <p style="color: #1E2A3A99; font-size: 14px; margin-bottom: 16px;">Get a full 30-day structured practice pack for just $19.</p>
-    <a href="https://fretpath-sage.vercel.app/plan/${planId}" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Get the 30-day pack</a>
+<div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
+    <h3 style="color: #1E2A3A; margin-top: 0;">Open your plan online</h3>
+    <p style="color: #1E2A3A99; font-size: 14px; margin-bottom: 16px;">Bookmark this link to revisit your plan anytime.</p>
+    <a href="https://fretpath-sage.vercel.app/plan/${planId}" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">View your practice plan</a>
   </div>
 
   <p style="color: #999; font-size: 12px; text-align: center;">FretPath — Built for real guitarists<br>
