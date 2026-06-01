@@ -215,7 +215,7 @@ function Footer() {
         <div className="flex gap-6 text-xs text-neutral-400">
           <a href="/privacy" className="hover:text-neutral-600 transition-colors">Privacy</a>
           <a href="/terms" className="hover:text-neutral-600 transition-colors">Terms</a>
-          <a href="mailto:hello@fretpath.com" className="hover:text-neutral-600 transition-colors">Contact</a>
+          <a href="mailto:hello.fretpath@gmail.com" className="hover:text-neutral-600 transition-colors">Contact</a>
         </div>
         <p className="text-xs text-neutral-400">2026 FretPath. Built for real guitarists.</p>
       </div>
