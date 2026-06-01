@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-5",
-      max_tokens: 4000,
+      max_tokens: 8192,
       messages: [{ role: "user", content: userPrompt }],
       system: systemPrompt,
     })
@@ -32,13 +32,18 @@ export async function POST(req: NextRequest) {
     const content_block = message.content[0]
     if (content_block.type !== "text") throw new Error("Unexpected response type")
 
-    const cleaned = content_block.text.replace(/```json/g, "").replace(/```/g, "").trim()
+ let cleaned = content_block.text.replace(/```json/g, "").replace(/```/g, "").trim()
+    const jsonStart = cleaned.indexOf('{')
+    const jsonEnd = cleaned.lastIndexOf('}')
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      cleaned = cleaned.substring(jsonStart, jsonEnd + 1)
+    }
 
     let planData
     try {
       planData = JSON.parse(cleaned)
     } catch {
-      throw new Error("Claude returned invalid JSON")
+    throw new Error("Plan generation failed. Please try again.")
     }
 
     const shareToken = Math.random().toString(36).substr(2, 12)
