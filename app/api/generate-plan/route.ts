@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
       "- days (array of 7 objects, each with: day_number (int), day_name (string like 'Monday'), focus (string), total_minutes (int, equal to the daily practice time), exercises (array of 3-4 objects, each with: name (string), category (one of: warmup, technique, theory, song, improvisation, cooldown), duration_minutes (int), description (string: 3-4 sentences covering what to do, how to do it correctly, the common mistake, and what success feels like), tip (string: one concrete pro tip)), motivational_note (string: one encouraging sentence specific to that day's work))",
       "- weekly_goal (string: what the player will be able to do by end of week)",
       "",
-      "Remember: every exercise description must teach with real depth, durations must sum to the daily time, and each day must build on the last.",
+      "Remember: every exercise description must teach with real depth, durations must sum to the daily time, and each day must build on the last. Keep each exercise description to 2-3 sentences maximum - prioritize clarity and actionability over length.",
     ].join("\n")
 
     const message = await anthropic.messages.create({
