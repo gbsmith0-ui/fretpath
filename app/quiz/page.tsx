@@ -174,4 +174,4 @@ export default function QuizPage() {
               <span>Step {currentStep + 1} of {questions.length}</span>
               <span>{Math.round(progress)}% complete</span>
             </div>
-            <div className="h-1.5 bg-neutral-200 rounded-full overflow-hi
+            <div className="h-1.5 bg-neutral-200 rounded-full overflow-hidden"
