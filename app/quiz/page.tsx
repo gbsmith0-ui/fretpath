@@ -174,4 +174,52 @@ export default function QuizPage() {
               <span>Step {currentStep + 1} of {questions.length}</span>
               <span>{Math.round(progress)}% complete</span>
             </div>
-            <div className="h-1.5 bg-neutral-200 rounded-full overflow-hidden"
+            <div className="h-1.5 bg-neutral-200 rounded-full overflow-hidden">
+                <div
+                className="h-full bg-[#D4890A] rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+          <div className="bg-white rounded-xl border border-neutral-200 p-8">
+            <h2 className="text-xl font-bold text-[#1E2A3A] mb-6">{question.question}</h2>
+            {question.isEmail ? (
+              <div className="space-y-4">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 border border-neutral-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#D4890A]/30 focus:border-[#D4890A]"
+                />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  className="w-full bg-[#D4890A] text-[#1E2A3A] font-semibold py-3 rounded-lg hover:bg-[#c07a09] transition-colors disabled:opacity-50"
+                >
+                  Build my practice plan
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {question.options?.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleOption(option)}
+                    className={`w-full text-left px-4 py-3 rounded-lg border text-sm font-medium transition-colors ${answers[question.id] === option ? 'bg-[#1E2A3A] text-[#D4890A] border-[#1E2A3A]' : 'bg-white text-neutral-700 border-neutral-200 hover:border-[#1E2A3A] hover:text-[#1E2A3A]'}`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {currentStep > 0 && (
+            <button onClick={handleBack} className="mt-4 text-sm text-neutral-400 hover:text-neutral-600 transition-colors">Back</button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
