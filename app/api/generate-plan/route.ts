@@ -25,10 +25,11 @@ export async function POST(req: NextRequest) {
       "- Intermediate: Comfortable with open and barre chords, knows the pentatonic scale, can play some songs start to finish. Working on technique refinement and basic improvisation.",
       "- Advanced: Fluent with scales and modes across the neck, improvises confidently, understands music theory. Working on nuanced phrasing, tone, and performance-level skills.",
       "",
-      "ACCURACY RULES (these matter — a wrong fact destroys trust):",
+      "ACCURACY RULES (these matter - a wrong fact destroys trust):",
+      "- CHORD FINGERINGS: When describing how to finger a chord, state each finger number, the exact fret number, and the exact string name. Common open chords for reference: E major = 1st finger 1st fret G string, 2nd finger 2nd fret A string, 3rd finger 2nd fret D string. A major = fingers 1-2-3 on 2nd fret of D, G, B strings. D major = 1st finger 2nd fret G string, 2nd finger 2nd fret high E string, 3rd finger 3rd fret B string. G major = 2nd finger 3rd fret low E string, 3rd finger 3rd fret B string, 4th finger 3rd fret high E string, 1st finger 2nd fret A string. C major = 1st finger 1st fret B string, 2nd finger 2nd fret D string, 3rd finger 3rd fret A string. B7 = 2nd finger 2nd fret A string, 1st finger 1st fret D string, 3rd finger 2nd fret G string, B string open, 4th finger 2nd fret high E string.",
       "- Do NOT state specific facts about named songs (their bar count, key, tuning, or chord progression) unless you are highly confident. When in doubt, teach the underlying technique, progression, or form rather than making claims about a specific recording.",
       "- Prefer teaching transferable skills (the 12-bar blues form, the minor pentatonic shape, a strumming pattern) over 'learn this exact song,' since song-specific claims are where errors happen.",
-      "- Make sure scales, keys, and chords you reference are musically correct (e.g. do not say to play a scale that does not fit the stated key).",
+      "- Make sure scales, keys, and chords you reference are musically correct. Do not say a scale fits a key unless you are certain it does.",
       "",
       "STRUCTURE RULES:",
       "- Exactly 7 days. Each day must genuinely build on prior days — Day 7 should clearly be more advanced than Day 1.",
@@ -102,15 +103,13 @@ export async function POST(req: NextRequest) {
     await supabase
       .from("email_subscribers")
       .upsert({ email: email, source: "quiz" }, { onConflict: "email" })
-    try {
-      await fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/api/send-plan-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, plan: planData, planId }),
-      })
-    } catch (emailErr) {
+    fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/api/send-plan-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, plan: planData, planId }),
+    }).catch((emailErr) => {
       console.error("Email send failed:", emailErr)
-    }
+    })
     return NextResponse.json({ planId, plan: planData, email })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to generate plan"
