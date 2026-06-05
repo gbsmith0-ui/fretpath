@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -51,12 +52,14 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [loading, setLoading] = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [planSaved, setPlanSaved] = useState(false)
+  const [practiced, setPracticed] = useState(false)
+  const [practicing, setPracticing] = useState(false)
   const resolvedParams = React.use(params)
-
-  const supabaseBrowser = createBrowserClient(
+  const supabaseBrowserRef = useRef(createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  ))
+  const supabaseBrowser = supabaseBrowserRef.current
 
   useEffect(() => {
     async function loadPlan() {
@@ -66,7 +69,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         setLoading(false)
         return
       }
-
       const id = resolvedParams.id
       if (id && !id.startsWith('plan_')) {
         const { data, error } = await supabase
@@ -74,18 +76,16 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
           .select('plan_data')
           .eq('id', id)
           .single()
-
         if (!error && data) {
           setPlan(data.plan_data)
         }
       }
-      ssetLoading(false)
+      setLoading(false)
     }
     async function checkAuth() {
       const { data: { user } } = await supabaseBrowser.auth.getUser()
       if (user) {
         setIsLoggedIn(true)
-        // Check if this plan is already saved to their account
         const id = resolvedParams.id
         if (id && !id.startsWith('plan_')) {
           const { data } = await supabase
@@ -101,7 +101,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     checkAuth()
   }, [resolvedParams.id])
 
-  
   async function downloadPlan() {
     try {
       const response = await fetch('/api/export-pdf', {
@@ -123,8 +122,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     }
   }
 
-  
-async function handleSavePlan() {
+  async function handleSavePlan() {
     const id = resolvedParams.id
     if (!id || id.startsWith('plan_')) return
     const { data: { session } } = await supabaseBrowser.auth.getSession()
@@ -137,6 +135,32 @@ async function handleSavePlan() {
       .update({ user_id: session.user.id })
       .eq('id', id)
     if (!error) setPlanSaved(true)
+  }
+
+  async function handleMarkPracticed() {
+    if (!isLoggedIn) {
+      window.location.href = '/sign-in'
+      return
+    }
+    setPracticing(true)
+    const { data: { session } } = await supabaseBrowser.auth.getSession()
+    if (!session) {
+      window.location.href = '/sign-in'
+      return
+    }
+    const id = resolvedParams.id
+    const response = await fetch('/api/log-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ planId: id, durationMinutes: 30 }),
+    })
+    if (response.ok) {
+      setPracticed(true)
+    }
+    setPracticing(false)
   }
 
   function copyLink() {
@@ -187,10 +211,10 @@ async function handleSavePlan() {
               )}
             </div>
             <div className="flex gap-2">
-            <button onClick={downloadPlan} className="text-xs bg-[#1E2A3A] text-[#D4890A] px-3 py-1.5 rounded-md hover:bg-[#162030] transition-colors whitespace-nowrap">Download plan</button>
-            <button onClick={copyLink} className="text-xs border border-neutral-200 px-3 py-1.5 rounded-md text-neutral-500 hover:border-neutral-400 transition-colors whitespace-nowrap">
-              {copied ? 'Copied!' : 'Share link'}
-            </button>
+              <button onClick={downloadPlan} className="text-xs bg-[#1E2A3A] text-[#D4890A] px-3 py-1.5 rounded-md hover:bg-[#162030] transition-colors whitespace-nowrap">Download plan</button>
+              <button onClick={copyLink} className="text-xs border border-neutral-200 px-3 py-1.5 rounded-md text-neutral-500 hover:border-neutral-400 transition-colors whitespace-nowrap">
+                {copied ? 'Copied!' : 'Share link'}
+              </button>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
@@ -243,10 +267,33 @@ async function handleSavePlan() {
             </div>
           ))}
         </div>
-<div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
-  <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
-  <p className="text-white/80 text-sm leading-relaxed">We're building a 30-day expanded version with deeper progression and amp-specific tone settings. You're already on our list — we'll email you the moment it's ready.</p>
-</div>
+        {isLoggedIn && (
+          <div className="bg-white rounded-xl border border-neutral-200 p-5 mb-4 text-center">
+            {practiced ? (
+              <div>
+                <div className="text-2xl mb-2">🔥</div>
+                <p className="text-sm font-semibold text-[#1E2A3A]">Practice logged!</p>
+                <p className="text-xs text-neutral-400 mt-1">Your streak has been updated.</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm font-semibold text-[#1E2A3A] mb-1">Did you practice today?</p>
+                <p className="text-xs text-neutral-500 mb-4">Log your session to keep your streak alive.</p>
+                <button
+                  onClick={handleMarkPracticed}
+                  disabled={practicing}
+                  className="bg-[#D4890A] text-[#1E2A3A] font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors disabled:opacity-50"
+                >
+                  {practicing ? 'Logging...' : 'Mark as practiced'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+        <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
+          <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
+          <p className="text-white/80 text-sm leading-relaxed">We are building a 30-day expanded version with deeper progression and amp-specific tone settings. You are already on our list - we will email you the moment it is ready.</p>
+        </div>
       </div>
     </div>
   )
