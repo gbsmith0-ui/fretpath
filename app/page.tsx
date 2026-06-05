@@ -1,3 +1,4 @@
+﻿import Nav from './components/Nav'
 import {
   Clock,
   CreditCard,
@@ -8,22 +9,6 @@ import {
   ListChecks,
   Mail,
 } from 'lucide-react'
-
-function Nav() {
-  return (
-    <nav className="sticky top-0 z-50 bg-[#F8F6F2]/95 backdrop-blur-sm border-b border-neutral-200">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <div className="bg-[#1E2A3A] text-[#D4890A] font-semibold text-lg px-4 py-1.5 rounded-md tracking-tight">FretPath</div>
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#how-it-works" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">How it works</a>
-          <a href="#whats-coming" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">What's Coming</a>
-          <a href="/sign-in" className="text-sm text-neutral-600 hover:text-neutral-900 transition-colors">Sign in</a>
-        </div>
-        <a href="/quiz" className="bg-[#D4890A] text-[#1E2A3A] text-sm font-semibold px-5 py-2 rounded-md hover:bg-[#c07a09] transition-colors">Get my free plan</a>
-      </div>
-    </nav>
-  )
-}
 
 function Hero() {
   const trustItems = [
@@ -47,7 +32,7 @@ function Hero() {
         ))}
       </div>
       <div className="mt-12 max-w-sm mx-auto bg-white rounded-xl border border-neutral-200 p-5 text-left">
-        <div className="text-xs text-neutral-400 mb-2">Step 1 of 7 · About your practice</div>
+        <div className="text-xs text-neutral-400 mb-2">Step 1 of 7 Â· About your practice</div>
         <div className="text-sm font-semibold text-[#1E2A3A] mb-3">How much time can you practice today?</div>
         <div className="flex gap-2 flex-wrap">
           {timeOptions.map((t, i) => (
@@ -115,7 +100,7 @@ function HowItWorks() {
       </div>
       <div className="max-w-md mx-auto bg-white rounded-xl border border-neutral-200 overflow-hidden">
         <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
-          <span className="text-sm font-semibold text-[#1E2A3A]">Blues · 30 min · Intermediate</span>
+          <span className="text-sm font-semibold text-[#1E2A3A]">Blues Â· 30 min Â· Intermediate</span>
           <span className="text-xs bg-[#D4890A]/15 text-[#D4890A] px-2 py-0.5 rounded font-medium">PDF ready</span>
         </div>
         <div className="divide-y divide-neutral-50">
@@ -146,7 +131,7 @@ function Pricing() {
     <section id="whats-coming" className="bg-white border-y border-neutral-200 py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-[#1E2A3A] text-center mb-3">What's Coming</h2>
-        <p className="text-neutral-500 text-center mb-12 text-sm">FretPath is free right now. Paid plans are in development — try the free plan to be first in line.</p>
+        <p className="text-neutral-500 text-center mb-12 text-sm">FretPath is free right now. Paid plans are in development â€” try the free plan to be first in line.</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
           <div className="rounded-xl border-2 border-[#1E2A3A] bg-[#1E2A3A] p-6 flex flex-col">
             <div className="text-xs font-semibold text-[#D4890A]/70 uppercase tracking-wider mb-2">Available Now</div>
@@ -164,10 +149,10 @@ function Pricing() {
             <div className="text-3xl font-bold text-[#1E2A3A] mb-1">30-Day Pack</div>
             <p className="text-sm text-neutral-500 mb-6">Four weeks of AI-generated plans that build on each other, emailed weekly.</p>
             <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>4 progressive weekly plans</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Genre-specific progressions</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Amp-specific tone guidance</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Printable PDF each week</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>4 progressive weekly plans</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Genre-specific progressions</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Amp-specific tone guidance</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Printable PDF each week</li>
             </ul>
             <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
           </div>
@@ -176,10 +161,10 @@ function Pricing() {
             <div className="text-3xl font-bold text-[#1E2A3A] mb-1">Monthly Plans</div>
             <p className="text-sm text-neutral-500 mb-6">A new personalized plan every week, plus streak tracking and progress over time.</p>
             <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Unlimited AI plan generation</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Streak and progress tracking</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Genre-specific learning paths</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">○</span>Saved plan history</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Unlimited AI plan generation</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Streak and progress tracking</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Genre-specific learning paths</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Saved plan history</li>
             </ul>
             <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
           </div>
@@ -236,3 +221,5 @@ export default function HomePage() {
     </div>
   )
 }
+
+
