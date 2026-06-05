@@ -52,6 +52,8 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [loading, setLoading] = useState(true)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [planSaved, setPlanSaved] = useState(false)
+  const [practiced, setPracticed] = useState(false)
+  const [practicing, setPracticing] = useState(false)
   const resolvedParams = React.use(params)
   const supabaseBrowser = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -132,6 +134,33 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       .update({ user_id: session.user.id })
       .eq('id', id)
     if (!error) setPlanSaved(true)
+  }
+
+  async function handleMarkPracticed() {
+    if (!isLoggedIn) {
+      window.location.href = '/sign-in'
+      return
+    }
+    setPracticing(true)
+    const { data: { session } } = await supabaseBrowser.auth.getSession()
+    if (!session) {
+      window.location.href = '/sign-in'
+      return
+    }
+    const id = resolvedParams.id
+    const response = await fetch('/api/log-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ planId: id, durationMinutes: 30 }),
+    })
+    const data = await response.json()
+    if (response.ok) {
+      setPracticed(true)
+    }
+    setPracticing(false)
   }
 
   function copyLink() {
@@ -238,6 +267,29 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             </div>
           ))}
         </div>
+        {isLoggedIn && (
+          <div className="bg-white rounded-xl border border-neutral-200 p-5 mb-4 text-center">
+            {practiced ? (
+              <div>
+                <div className="text-2xl mb-2">🔥</div>
+                <p className="text-sm font-semibold text-[#1E2A3A]">Practice logged!</p>
+                <p className="text-xs text-neutral-400 mt-1">Your streak has been updated.</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm font-semibold text-[#1E2A3A] mb-1">Did you practice today?</p>
+                <p className="text-xs text-neutral-500 mb-4">Log your session to keep your streak alive.</p>
+                <button
+                  onClick={handleMarkPracticed}
+                  disabled={practicing}
+                  className="bg-[#D4890A] text-[#1E2A3A] font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors disabled:opacity-50"
+                >
+                  {practicing ? 'Logging...' : 'Mark as practiced'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
           <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
           <p className="text-white/80 text-sm leading-relaxed">We are building a 30-day expanded version with deeper progression and amp-specific tone settings. You are already on our list - we will email you the moment it is ready.</p>
@@ -246,3 +298,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     </div>
   )
 }
+
+
+
