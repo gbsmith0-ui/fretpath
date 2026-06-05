@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk"
+﻿import Anthropic from "@anthropic-ai/sdk"
 import { createClient } from "@supabase/supabase-js"
 import { NextRequest, NextResponse } from "next/server"
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
@@ -12,6 +12,14 @@ export async function POST(req: NextRequest) {
     const { practice_time, skill_level, genre, goal, weakness, guitar_type, email } = body
     if (!email || !skill_level || !genre) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    }
+    // Detect logged-in user from Authorization header
+    let userId: string | null = null
+    const authHeader = req.headers.get('Authorization')
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '')
+      const { data: { user } } = await supabase.auth.getUser(token)
+      if (user) userId = user.id
     }
 
     const systemPrompt = [
@@ -32,14 +40,14 @@ export async function POST(req: NextRequest) {
       "- Make sure scales, keys, and chords you reference are musically correct. Do not say a scale fits a key unless you are certain it does.",
       "",
       "STRUCTURE RULES:",
-      "- Exactly 7 days. Each day must genuinely build on prior days — Day 7 should clearly be more advanced than Day 1.",
+      "- Exactly 7 days. Each day must genuinely build on prior days â€” Day 7 should clearly be more advanced than Day 1.",
       "- Each day has 3 to 4 exercises. The sum of exercise durations MUST equal the daily practice time provided.",
       "- Address the player's stated weakness on most days, woven into exercises.",
       "- Tie exercises to the stated genre with genre-authentic techniques (e.g. blues: bends, shuffle feel, pentatonic phrasing; country: hybrid picking, chicken pickin', double stops; classic rock: power chords, palm muting, riff-based playing).",
       "- Each exercise 'category' must be one of: warmup, technique, theory, song, improvisation, cooldown.",
       "",
       "OUTPUT FORMAT:",
-      "Respond with valid JSON only — no markdown, no backticks, no explanation, no text before or after. Just the raw JSON object.",
+      "Respond with valid JSON only â€” no markdown, no backticks, no explanation, no text before or after. Just the raw JSON object.",
     ].join("\n")
 
     const userPrompt = [
@@ -93,6 +101,7 @@ export async function POST(req: NextRequest) {
         genre_focus: genre,
         day_count: 7,
         share_token: shareToken,
+        ...(userId && { user_id: userId }),
       })
       .select("id")
       .single()
@@ -117,3 +126,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+

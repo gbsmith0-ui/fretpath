@@ -50,7 +50,13 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [openDay, setOpenDay] = useState<number>(1)
   const [copied, setCopied] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [planSaved, setPlanSaved] = useState(false)
   const resolvedParams = React.use(params)
+  const supabaseBrowser = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
     async function loadPlan() {
@@ -60,7 +66,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         setLoading(false)
         return
       }
-
       const id = resolvedParams.id
       if (id && !id.startsWith('plan_')) {
         const { data, error } = await supabase
@@ -68,17 +73,31 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
           .select('plan_data')
           .eq('id', id)
           .single()
-
         if (!error && data) {
           setPlan(data.plan_data)
         }
       }
       setLoading(false)
     }
+    async function checkAuth() {
+      const { data: { user } } = await supabaseBrowser.auth.getUser()
+      if (user) {
+        setIsLoggedIn(true)
+        const id = resolvedParams.id
+        if (id && !id.startsWith('plan_')) {
+          const { data } = await supabase
+            .from('practice_plans')
+            .select('user_id')
+            .eq('id', id)
+            .single()
+          if (data?.user_id) setPlanSaved(true)
+        }
+      }
+    }
     loadPlan()
+    checkAuth()
   }, [resolvedParams.id])
 
-  
   async function downloadPlan() {
     try {
       const response = await fetch('/api/export-pdf', {
@@ -100,8 +119,20 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     }
   }
 
-  
-
+  async function handleSavePlan() {
+    const id = resolvedParams.id
+    if (!id || id.startsWith('plan_')) return
+    const { data: { session } } = await supabaseBrowser.auth.getSession()
+    if (!session) {
+      window.location.href = '/sign-in'
+      return
+    }
+    const { error } = await supabase
+      .from('practice_plans')
+      .update({ user_id: session.user.id })
+      .eq('id', id)
+    if (!error) setPlanSaved(true)
+  }
 
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
@@ -142,12 +173,19 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             <div>
               <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-1">Your Practice Plan</div>
               <h1 className="text-xl font-bold text-[#1E2A3A]">{plan.plan_title}</h1>
+              {planSaved ? (
+                <p className="text-xs text-neutral-400 mt-1">Saved to your account</p>
+              ) : (
+                <button onClick={handleSavePlan} className="text-xs text-[#D4890A] hover:underline mt-1 text-left">
+                  {isLoggedIn ? 'Save to my account' : 'Sign in to save this plan'}
+                </button>
+              )}
             </div>
             <div className="flex gap-2">
-            <button onClick={downloadPlan} className="text-xs bg-[#1E2A3A] text-[#D4890A] px-3 py-1.5 rounded-md hover:bg-[#162030] transition-colors whitespace-nowrap">Download plan</button>
-            <button onClick={copyLink} className="text-xs border border-neutral-200 px-3 py-1.5 rounded-md text-neutral-500 hover:border-neutral-400 transition-colors whitespace-nowrap">
-              {copied ? 'Copied!' : 'Share link'}
-            </button>
+              <button onClick={downloadPlan} className="text-xs bg-[#1E2A3A] text-[#D4890A] px-3 py-1.5 rounded-md hover:bg-[#162030] transition-colors whitespace-nowrap">Download plan</button>
+              <button onClick={copyLink} className="text-xs border border-neutral-200 px-3 py-1.5 rounded-md text-neutral-500 hover:border-neutral-400 transition-colors whitespace-nowrap">
+                {copied ? 'Copied!' : 'Share link'}
+              </button>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap mb-4">
@@ -200,10 +238,10 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             </div>
           ))}
         </div>
-<div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
-  <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
-  <p className="text-white/80 text-sm leading-relaxed">We're building a 30-day expanded version with deeper progression and amp-specific tone settings. You're already on our list â€” we'll email you the moment it's ready.</p>
-</div>
+        <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
+          <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
+          <p className="text-white/80 text-sm leading-relaxed">We are building a 30-day expanded version with deeper progression and amp-specific tone settings. You are already on our list - we will email you the moment it is ready.</p>
+        </div>
       </div>
     </div>
   )
