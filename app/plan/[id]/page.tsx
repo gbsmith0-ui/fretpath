@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 
 import React, { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -201,7 +202,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         </div>
 <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
   <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
-  <p className="text-white/80 text-sm leading-relaxed">We're building a 30-day expanded version with deeper progression and amp-specific tone settings. You're already on our list — we'll email you the moment it's ready.</p>
+  <p className="text-white/80 text-sm leading-relaxed">We're building a 30-day expanded version with deeper progression and amp-specific tone settings. You're already on our list â€” we'll email you the moment it's ready.</p>
 </div>
       </div>
     </div>
