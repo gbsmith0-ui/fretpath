@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { createBrowserClient } from '@supabase/ssr'
 
 const questions = [
   {
@@ -104,9 +105,18 @@ export default function QuizPage() {
     setLoadingMessageIndex(0)
     setLoadingProgress(0)
     try {
+      // Get session token if user is logged in
+      const supabaseClient = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      )
+      const { data: { session } } = await supabaseClient.auth.getSession()
       const response = await fetch('/api/generate-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session?.access_token && { 'Authorization': `Bearer ${session.access_token}` }),
+        },
         body: JSON.stringify({ ...answers, email }),
       })
       const data = await response.json()
