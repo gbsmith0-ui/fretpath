@@ -1,4 +1,4 @@
-﻿import Anthropic from "@anthropic-ai/sdk"
+import Anthropic from "@anthropic-ai/sdk"
 import { createClient } from "@supabase/supabase-js"
 import { NextRequest, NextResponse } from "next/server"
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
@@ -19,9 +19,19 @@ export async function POST(req: NextRequest) {
     if (authHeader?.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '')
       const { data: { user } } = await supabase.auth.getUser(token)
-      if (user) userId = user.id
+      if (user) {
+        userId = user.id
+        // Check plan limit for free users
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('subscription_tier, plans_generated')
+          .eq('id', user.id)
+          .single()
+        if (profile && profile.subscription_tier === 'free' && profile.plans_generated >= 3) {
+          return NextResponse.json({ error: 'upgrade_required', plans_generated: profile.plans_generated }, { status: 403 })
+        }
+      }
     }
-
     const systemPrompt = [
       "You are a seasoned guitar instructor who has taught adult hobbyist players for 20 years. You build focused, realistic practice plans for busy adults who have limited time and want to feel real progress.",
       "",
@@ -40,16 +50,15 @@ export async function POST(req: NextRequest) {
       "- Make sure scales, keys, and chords you reference are musically correct. Do not say a scale fits a key unless you are certain it does.",
       "",
       "STRUCTURE RULES:",
-      "- Exactly 7 days. Each day must genuinely build on prior days â€” Day 7 should clearly be more advanced than Day 1.",
+      "- Exactly 7 days. Each day must genuinely build on prior days - Day 7 should clearly be more advanced than Day 1.",
       "- Each day has 3 to 4 exercises. The sum of exercise durations MUST equal the daily practice time provided.",
       "- Address the player's stated weakness on most days, woven into exercises.",
       "- Tie exercises to the stated genre with genre-authentic techniques (e.g. blues: bends, shuffle feel, pentatonic phrasing; country: hybrid picking, chicken pickin', double stops; classic rock: power chords, palm muting, riff-based playing).",
       "- Each exercise 'category' must be one of: warmup, technique, theory, song, improvisation, cooldown.",
       "",
       "OUTPUT FORMAT:",
-      "Respond with valid JSON only â€” no markdown, no backticks, no explanation, no text before or after. Just the raw JSON object.",
+      "Respond with valid JSON only - no markdown, no backticks, no explanation, no text before or after. Just the raw JSON object.",
     ].join("\n")
-
     const userPrompt = [
       "Create a 7-day guitar practice plan for this player:",
       "- Daily practice time: " + practice_time + " (the exercises each day must total this many minutes)",
@@ -109,6 +118,20 @@ export async function POST(req: NextRequest) {
       console.error("Supabase save error:", saveError)
     }
     const planId = savedPlan?.id || ("plan_" + Date.now())
+    // Increment plans_generated for logged-in users
+    if (userId) {
+      const { data: currentProfile } = await supabase
+        .from('profiles')
+        .select('plans_generated')
+        .eq('id', userId)
+        .single()
+      if (currentProfile) {
+        await supabase
+          .from('profiles')
+          .update({ plans_generated: (currentProfile.plans_generated || 0) + 1 })
+          .eq('id', userId)
+      }
+    }
     await supabase
       .from("email_subscribers")
       .upsert({ email: email, source: "quiz" }, { onConflict: "email" })
@@ -126,4 +149,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
-
