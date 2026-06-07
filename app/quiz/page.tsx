@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -120,6 +120,10 @@ export default function QuizPage() {
         body: JSON.stringify({ ...answers, email }),
       })
       const data = await response.json()
+      if (response.status === 403 && data.error === 'upgrade_required') {
+        router.push('/pricing')
+        return
+      }
       if (!response.ok) throw new Error(data.error || 'Something went wrong')
       sessionStorage.setItem('fretpath_plan', JSON.stringify(data.plan))
       router.push(`/plan/${data.planId}`)
