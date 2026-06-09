@@ -91,7 +91,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         setIsLoggedIn(true)
         const id = resolvedParams.id
         if (id && !id.startsWith('plan_')) {
-          const { data } = await supabase
+          const { data } = await supabaseBrowser
             .from('practice_plans')
             .select('user_id, pack_id, week_number, skill_level, genre_focus, duration_minutes')
             .eq('id', id)
@@ -110,7 +110,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             })
           }
         }
-        const { data: profile } = await supabase
+        const { data: profile } = await supabaseBrowser
           .from('profiles')
           .select('subscription_tier')
           .eq('id', user.id)
