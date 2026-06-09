@@ -194,6 +194,11 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     setGeneratingWeek(false)
   }
 
+  function dismissOnboarding() {
+    localStorage.setItem('fretpath_onboarding_seen', 'true')
+    setShowOnboarding(false)
+  }
+
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopied(true)
@@ -228,6 +233,31 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       </nav>
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+        {showOnboarding && (
+          <div className="bg-[#1E2A3A] rounded-xl p-5 mb-6 relative">
+            <button onClick={dismissOnboarding} className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors text-lg leading-none">x</button>
+            <div className="text-[#D4890A] font-semibold text-sm mb-3">Welcome to FretPath</div>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl mb-1">&#127928;</div>
+                <div className="text-white text-xs font-semibold mb-1">Practice daily</div>
+                <div className="text-white/60 text-xs leading-relaxed">Work through each day in order. Even 15 minutes builds real momentum.</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl mb-1">&#10003;</div>
+                <div className="text-white text-xs font-semibold mb-1">Log your session</div>
+                <div className="text-white/60 text-xs leading-relaxed">Tap Mark as practiced after each session to track your streak.</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl mb-1">&#128293;</div>
+                <div className="text-white text-xs font-semibold mb-1">Build your streak</div>
+                <div className="text-white/60 text-xs leading-relaxed">Practice every day to grow your streak. Check your dashboard to see your progress.</div>
+              </div>
+            </div>
+            <button onClick={dismissOnboarding} className="mt-4 text-xs text-white/40 hover:text-white/60 transition-colors">Got it, hide this</button>
+          </div>
+        )}
+
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
               <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-1">Your Practice Plan</div>
