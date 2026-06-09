@@ -54,13 +54,18 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [planSaved, setPlanSaved] = useState(false)
   const [practiced, setPracticed] = useState(false)
   const [practicing, setPracticing] = useState(false)
+  const [isPro, setIsPro] = useState(false)
+  const [packId, setPackId] = useState<string | null>(null)
+  const [weekNumber, setWeekNumber] = useState<number | null>(null)
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string> | null>(null)
+  const [generatingWeek, setGeneratingWeek] = useState(false)
+  const [nextWeekId, setNextWeekId] = useState<string | null>(null)
   const resolvedParams = React.use(params)
   const supabaseBrowserRef = useRef(createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   ))
   const supabaseBrowser = supabaseBrowserRef.current
-
   useEffect(() => {
     async function loadPlan() {
       const sessionData = sessionStorage.getItem('fretpath_plan')
@@ -76,9 +81,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
           .select('plan_data')
           .eq('id', id)
           .single()
-        if (!error && data) {
-          setPlan(data.plan_data)
-        }
+        if (!error && data) setPlan(data.plan_data)
       }
       setLoading(false)
     }
@@ -90,11 +93,29 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         if (id && !id.startsWith('plan_')) {
           const { data } = await supabase
             .from('practice_plans')
-            .select('user_id')
+            .select('user_id, pack_id, week_number, skill_level, genre_focus, duration_minutes')
             .eq('id', id)
             .single()
           if (data?.user_id) setPlanSaved(true)
+          if (data?.pack_id) setPackId(data.pack_id)
+          if (data?.week_number) setWeekNumber(data.week_number)
+          if (data) {
+            setQuizAnswers({
+              practice_time: data.duration_minutes + ' minutes',
+              skill_level: data.skill_level,
+              genre: data.genre_focus,
+              goal: '',
+              weakness: '',
+              guitar_type: '',
+            })
+          }
         }
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('subscription_tier')
+          .eq('id', user.id)
+          .single()
+        if (profile?.subscription_tier === 'pro') setIsPro(true)
       }
     }
     loadPlan()
@@ -126,10 +147,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     const id = resolvedParams.id
     if (!id || id.startsWith('plan_')) return
     const { data: { session } } = await supabaseBrowser.auth.getSession()
-    if (!session) {
-      window.location.href = '/sign-in'
-      return
-    }
+    if (!session) { window.location.href = '/sign-in'; return }
     const { error } = await supabase
       .from('practice_plans')
       .update({ user_id: session.user.id })
@@ -138,29 +156,38 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   }
 
   async function handleMarkPracticed() {
-    if (!isLoggedIn) {
-      window.location.href = '/sign-in'
-      return
-    }
+    if (!isLoggedIn) { window.location.href = '/sign-in'; return }
     setPracticing(true)
     const { data: { session } } = await supabaseBrowser.auth.getSession()
-    if (!session) {
-      window.location.href = '/sign-in'
-      return
-    }
+    if (!session) { window.location.href = '/sign-in'; return }
     const id = resolvedParams.id
     const response = await fetch('/api/log-session', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
       body: JSON.stringify({ planId: id, durationMinutes: 30 }),
     })
-    if (response.ok) {
-      setPracticed(true)
-    }
+    if (response.ok) setPracticed(true)
     setPracticing(false)
+  }
+
+  async function generateNextWeek() {
+    if (!packId || !weekNumber || !plan || !quizAnswers) return
+    setGeneratingWeek(true)
+    const { data: { session } } = await supabaseBrowser.auth.getSession()
+    if (!session) { window.location.href = '/sign-in'; return }
+    const response = await fetch('/api/generate-week', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({
+        packId,
+        weekNumber: weekNumber + 1,
+        previousPlan: { plan_title: plan.plan_title, weekly_goal: plan.weekly_goal, overview: plan.overview },
+        quizAnswers,
+      }),
+    })
+    const data = await response.json()
+    if (response.ok && data.planId) setNextWeekId(data.planId)
+    setGeneratingWeek(false)
   }
 
   function copyLink() {
@@ -168,7 +195,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8F6F2] flex items-center justify-center">
@@ -267,6 +293,36 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             </div>
           ))}
         </div>
+      {isPro && packId && weekNumber && weekNumber < 4 && (
+          <div className="bg-white rounded-xl border border-[#D4890A]/30 p-5 mb-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-1">
+                  30-Day Journey - Week {weekNumber} of 4
+                </div>
+                {nextWeekId ? (
+                  <p className="text-sm text-neutral-600">Week {weekNumber + 1} is ready!</p>
+                ) : (
+                  <p className="text-sm text-neutral-600">Complete this week, then generate Week {weekNumber + 1} when ready.</p>
+                )}
+              </div>
+              {nextWeekId ? (
+                <a href={`/plan/${nextWeekId}`} className="bg-[#D4890A] text-[#1E2A3A] font-semibold text-xs px-4 py-2 rounded-lg hover:bg-[#c07a09] transition-colors whitespace-nowrap">
+                  Go to Week {weekNumber + 1}
+                </a>
+              ) : (
+                <button onClick={generateNextWeek} disabled={generatingWeek} className="bg-[#1E2A3A] text-[#D4890A] font-semibold text-xs px-4 py-2 rounded-lg hover:bg-[#162030] transition-colors whitespace-nowrap disabled:opacity-50">
+                  {generatingWeek ? 'Generating...' : `Generate Week ${weekNumber + 1}`}
+                </button>
+              )}
+            </div>
+            <div className="flex gap-1 mt-3">
+              {[1, 2, 3, 4].map((w) => (
+                <div key={w} className={`h-1 flex-1 rounded-full ${w <= weekNumber ? 'bg-[#D4890A]' : 'bg-neutral-100'}`} />
+              ))}
+            </div>
+          </div>
+        )}
         {isLoggedIn && (
           <div className="bg-white rounded-xl border border-neutral-200 p-5 mb-4 text-center">
             {practiced ? (
@@ -279,11 +335,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
               <div>
                 <p className="text-sm font-semibold text-[#1E2A3A] mb-1">Did you practice today?</p>
                 <p className="text-xs text-neutral-500 mb-4">Log your session to keep your streak alive.</p>
-                <button
-                  onClick={handleMarkPracticed}
-                  disabled={practicing}
-                  className="bg-[#D4890A] text-[#1E2A3A] font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors disabled:opacity-50"
-                >
+                <button onClick={handleMarkPracticed} disabled={practicing} className="bg-[#D4890A] text-[#1E2A3A] font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-[#c07a09] transition-colors disabled:opacity-50">
                   {practicing ? 'Logging...' : 'Mark as practiced'}
                 </button>
               </div>
@@ -297,4 +349,4 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       </div>
     </div>
   )
-}
+}  

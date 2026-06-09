@@ -101,6 +101,7 @@ export async function POST(req: NextRequest) {
       throw new Error("Plan generation failed. Please try again.")
     }
     const shareToken = Math.random().toString(36).substr(2, 12)
+    const newPackId = crypto.randomUUID()
     const { data: savedPlan, error: saveError } = await supabase
       .from("practice_plans")
       .insert({
@@ -111,6 +112,7 @@ export async function POST(req: NextRequest) {
         day_count: 7,
         share_token: shareToken,
         ...(userId && { user_id: userId }),
+        ...(userId && { pack_id: newPackId, week_number: 1 }),
       })
       .select("id")
       .single()
