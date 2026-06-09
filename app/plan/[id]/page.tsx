@@ -343,8 +343,18 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
           </div>
         )}
         <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
-          <div className="text-[#D4890A] font-semibold mb-1">Want more than 7 days?</div>
-          <p className="text-white/80 text-sm leading-relaxed">We are building a 30-day expanded version with deeper progression and amp-specific tone settings. You are already on our list - we will email you the moment it is ready.</p>
+          {isPro ? (
+            <div>
+              <div className="text-[#D4890A] font-semibold mb-1">Your 30-Day Journey is active</div>
+              <p className="text-white/80 text-sm leading-relaxed">Use the journey card above to generate each week. Each week builds on the last - follow the progression for the best results.</p>
+            </div>
+          ) : (
+            <div>
+              <div className="text-[#D4890A] font-semibold mb-1">Want a full 30-day progression?</div>
+              <p className="text-white/80 text-sm leading-relaxed mb-4">FretPath Pro unlocks a 4-week journey where each week builds on the last - personalized to your genre, gear, and goals.</p>
+              <a href="/pricing" className="inline-block bg-[#D4890A] text-[#1E2A3A] font-semibold text-sm px-5 py-2 rounded-lg hover:bg-[#c07a09] transition-colors">Start free 7-day trial</a>
+            </div>
+          )}
         </div>
       </div>
     </div>
