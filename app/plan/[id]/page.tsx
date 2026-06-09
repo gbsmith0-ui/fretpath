@@ -60,6 +60,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string> | null>(null)
   const [generatingWeek, setGeneratingWeek] = useState(false)
   const [nextWeekId, setNextWeekId] = useState<string | null>(null)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const resolvedParams = React.use(params)
   const supabaseBrowserRef = useRef(createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -120,6 +121,9 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     }
     loadPlan()
     checkAuth()
+    // Show onboarding only on first ever plan visit
+    const hasSeen = localStorage.getItem('fretpath_onboarding_seen')
+    if (!hasSeen) setShowOnboarding(true)
   }, [resolvedParams.id])
 
   async function downloadPlan() {
