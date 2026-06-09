@@ -130,13 +130,13 @@ function Pricing() {
   return (
     <section id="whats-coming" className="bg-white border-y border-neutral-200 py-16">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl font-bold text-[#1E2A3A] text-center mb-3">What's Coming</h2>
-        <p className="text-neutral-500 text-center mb-12 text-sm">FretPath is free right now. Paid plans are in development â€” try the free plan to be first in line.</p>
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#1E2A3A] text-center mb-3">Start free. Upgrade when ready.</h2>
+        <p className="text-neutral-500 text-center mb-12 text-sm">Generate your first plan free - no account needed. Upgrade to Pro for unlimited plans, streak tracking, and your 30-day journey.</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
           <div className="rounded-xl border-2 border-[#1E2A3A] bg-[#1E2A3A] p-6 flex flex-col">
-            <div className="text-xs font-semibold text-[#D4890A]/70 uppercase tracking-wider mb-2">Available Now</div>
+            <div className="text-xs font-semibold text-[#D4890A]/70 uppercase tracking-wider mb-2">Free Forever</div>
             <div className="text-3xl font-bold text-[#D4890A] mb-1">Free</div>
-            <p className="text-sm text-white/60 mb-6">Your personalized 7-day practice plan. No card, no account required.</p>
+            <p className="text-sm text-white/60 mb-6">Your first personalized 7-day practice plan. No card, no account required.</p>
             <ul className="space-y-3 mb-8 flex-1">
               {freeFeatures.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-sm text-white/80"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />{f}</li>
@@ -144,36 +144,37 @@ function Pricing() {
             </ul>
             <a href="/quiz" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Get my free plan</a>
           </div>
-          <div className="rounded-xl border border-neutral-200 p-6 flex flex-col bg-[#F8F6F2]">
-            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">In Development</div>
-            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">30-Day Pack</div>
-            <p className="text-sm text-neutral-500 mb-6">Four weeks of AI-generated plans that build on each other, emailed weekly.</p>
-            <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>4 progressive weekly plans</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Genre-specific progressions</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Amp-specific tone guidance</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Printable PDF each week</li>
+          <div className="rounded-xl border-2 border-[#D4890A]/40 p-6 flex flex-col bg-white">
+            <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-2">Most Popular</div>
+            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">FretPath Pro</div>
+            <p className="text-sm text-neutral-500 mb-2">From $12/month - 7-day free trial included.</p>
+            <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-600">
+              <li className="flex items-start gap-2"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />Unlimited AI plan generation</li>
+              <li className="flex items-start gap-2"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />Streak tracking + 12-week heatmap</li>
+              <li className="flex items-start gap-2"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />Full plan history dashboard</li>
+              <li className="flex items-start gap-2"><Check size={14} className="text-[#D4890A] mt-0.5 shrink-0" />30-day journey (4 progressive weeks)</li>
             </ul>
-            <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
+            <a href="/pricing" className="block w-full text-center py-2.5 text-sm font-semibold bg-[#D4890A] text-[#1E2A3A] rounded-md hover:bg-[#c07a09] transition-colors mt-auto">Start free 7-day trial</a>
           </div>
           <div className="rounded-xl border border-neutral-200 p-6 flex flex-col bg-[#F8F6F2]">
-            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">In Development</div>
-            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">Monthly Plans</div>
-            <p className="text-sm text-neutral-500 mb-6">A new personalized plan every week, plus streak tracking and progress over time.</p>
+            <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Coming Soon</div>
+            <div className="text-3xl font-bold text-[#1E2A3A] mb-1">Song Mode</div>
+            <p className="text-sm text-neutral-500 mb-6">Pick a specific song. Get a targeted plan to learn it - chords, transitions, strumming, full assembly.</p>
             <ul className="space-y-3 mb-8 flex-1 text-sm text-neutral-500">
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Unlimited AI plan generation</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Streak and progress tracking</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Genre-specific learning paths</li>
-              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">â—‹</span>Saved plan history</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">o</span>Chord breakdown for your song</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">o</span>Transition drills</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">o</span>Strumming and picking patterns</li>
+              <li className="flex items-start gap-2"><span className="text-neutral-300 mt-0.5">o</span>Full song assembly plan</li>
             </ul>
             <div className="block w-full text-center py-2.5 text-sm font-medium border border-neutral-200 rounded-md text-neutral-400 bg-white cursor-default mt-auto">Coming soon</div>
           </div>
         </div>
-        <p className="text-center text-xs text-neutral-400 mt-8">Monthly plans and a 30-day pack are in development. Try the free 7-day plan to be first in line.</p>
+        <p className="text-center text-xs text-neutral-400 mt-8">No contracts. Cancel anytime. 7-day free trial on all Pro plans.</p>
       </div>
     </section>
   )
 }
+
 
 function EmailCapture() {
   return (
