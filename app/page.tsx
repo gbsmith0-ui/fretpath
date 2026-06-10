@@ -24,6 +24,7 @@ function Hero() {
       <p className="text-lg text-neutral-600 max-w-xl mx-auto mb-8 leading-relaxed">Stop guessing, stop scrolling YouTube, stop wasting your 20 minutes. FretPath builds a personalized daily routine around your schedule, your gear, and your goals in under 2 minutes.</p>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8">
         <a href="/quiz" className="w-full sm:w-auto bg-[#D4890A] text-[#1E2A3A] font-semibold text-base px-8 py-3.5 rounded-md hover:bg-[#c07a09] transition-colors">Build my free practice plan</a>
+        <a href="/song" className="w-full sm:w-auto text-[#D4890A] font-medium text-base px-6 py-3.5 rounded-md border border-[#D4890A]/40 hover:bg-[#D4890A]/10 transition-colors">Learn a specific song</a>
         <a href="#how-it-works" className="w-full sm:w-auto text-neutral-600 font-medium text-base px-6 py-3.5 rounded-md border border-neutral-300 hover:bg-neutral-100 transition-colors">See how it works</a>
       </div>
       <div className="flex items-center justify-center gap-6 text-sm text-neutral-400 flex-wrap">
@@ -32,7 +33,7 @@ function Hero() {
         ))}
       </div>
       <div className="mt-12 max-w-sm mx-auto bg-white rounded-xl border border-neutral-200 p-5 text-left">
-        <div className="text-xs text-neutral-400 mb-2">Step 1 of 7 Â· About your practice</div>
+        <div className="text-xs text-neutral-400 mb-2">Step 1 of 7 - About your practice</div>
         <div className="text-sm font-semibold text-[#1E2A3A] mb-3">How much time can you practice today?</div>
         <div className="flex gap-2 flex-wrap">
           {timeOptions.map((t, i) => (
