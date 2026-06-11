@@ -24,7 +24,7 @@ export default function SignInPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: 'https://fretpath-sage.vercel.app/api/auth/callback',
+        emailRedirectTo: 'https://fretpath.app/api/auth/callback',
       },
     })
     if (error) {
@@ -96,3 +96,4 @@ export default function SignInPage() {
     </div>
   )
 }
+

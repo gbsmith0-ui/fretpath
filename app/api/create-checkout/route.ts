@@ -1,4 +1,4 @@
-import Stripe from "stripe"
+﻿import Stripe from "stripe"
 import { NextRequest, NextResponse } from "next/server"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
       ],
       mode: "payment",
       customer_email: email || undefined,
-      success_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/purchase/success?session_id={CHECKOUT_SESSION_ID}&plan_id=" + (planId || ""),
-      cancel_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/pricing",
+      success_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/purchase/success?session_id={CHECKOUT_SESSION_ID}&plan_id=" + (planId || ""),
+      cancel_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/pricing",
       metadata: {
         plan_id: planId || "",
       },

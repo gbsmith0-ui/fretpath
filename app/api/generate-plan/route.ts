@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk"
+﻿import Anthropic from "@anthropic-ai/sdk"
 import { createClient } from "@supabase/supabase-js"
 import { NextRequest, NextResponse } from "next/server"
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
     await supabase
       .from("email_subscribers")
       .upsert({ email: email, source: "quiz" }, { onConflict: "email" })
-    fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/api/send-plan-email", {
+    fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/api/send-plan-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, plan: planData, planId }),

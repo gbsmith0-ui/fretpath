@@ -1,4 +1,4 @@
-import Stripe from "stripe"
+﻿import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
         trial_period_days: 7,
         metadata: { user_id: userId || "" },
       },
-      success_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/dashboard?subscribed=true",
-      cancel_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath-sage.vercel.app") + "/pricing",
+      success_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/dashboard?subscribed=true",
+      cancel_url: (process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/pricing",
       metadata: { user_id: userId || "" },
     })
 
@@ -36,3 +36,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+
