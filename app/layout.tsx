@@ -4,23 +4,23 @@ import './globals.css'
 import AnnouncementBar from './components/AnnouncementBar'
 
 const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
-  title: 'FretPath â€” Personalized AI Guitar Practice Plans',
-  description: 'Stop guessing what to practice. FretPath builds a personalized daily guitar routine around your schedule, gear, and goals â€” in under 2 minutes.',
-  keywords: 'guitar practice plan, AI guitar practice, daily guitar routine, blues guitar practice, intermediate guitar',
+  title: 'FretPath - AI Guitar Practice Plans | Personalized Daily Routines',
+  description: 'FretPath builds personalized 7-day guitar practice plans around your skill level, genre, gear, and goals. Free AI-powered practice plans for blues, country, classic rock, and acoustic guitar.',
+  keywords: 'guitar practice plan, AI guitar practice, personalized guitar lessons, blues guitar practice, country guitar practice, daily guitar routine, guitar practice routine, learn guitar, guitar practice app, intermediate guitar, beginner guitar practice',
   openGraph: {
-    title: 'FretPath â€” Personalized AI Guitar Practice Plans',
-    description: 'Stop guessing what to practice. Build a personalized daily routine in 2 minutes.',
+    title: 'FretPath - Personalized AI Guitar Practice Plans',
+    description: 'Stop guessing what to practice. Get a free personalized 7-day guitar practice plan built around your skill level, genre, and gear in under 2 minutes.',
     type: 'website',
     url: 'https://fretpath.app',
     siteName: 'FretPath',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FretPath â€” AI Guitar Practice Plans',
-    description: 'Know exactly what to practice. Every single day.',
+    title: 'FretPath - AI Guitar Practice Plans',
+    description: 'Know exactly what to practice. Every single day. Free personalized 7-day plans for guitarists.',
   },
+
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
