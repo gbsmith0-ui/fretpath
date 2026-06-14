@@ -3,6 +3,57 @@ import { NextRequest, NextResponse } from "next/server"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+function getDay3Html(planTitle: string, planId: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #F8F6F2;">
+  <div style="background: #1E2A3A; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+    <h1 style="color: #D4890A; margin: 0; font-size: 24px;">FretPath</h1>
+    <p style="color: #ffffff99; margin: 4px 0 0; font-size: 14px;">Day 3 check-in</p>
+  </div>
+  <div style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e5e5e5;">
+    <h2 style="color: #1E2A3A; margin-top: 0;">Have you practiced yet?</h2>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">You generated your FretPath plan 3 days ago: <strong>${planTitle}</strong></p>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">The research on habit formation is clear: the first 3 days are the hardest. If you've already practiced once or twice, you're ahead of most people. If you haven't started yet, today is the day.</p>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">Even 15 minutes today counts. Open your plan, do Day 1, log your session, and watch your streak start.</p>
+  </div>
+  <div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
+    <a href="https://fretpath.app/plan/${planId}" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Open my practice plan</a>
+  </div>
+  <p style="color: #999; font-size: 12px; text-align: center;">FretPath - Built for real guitarists<br>
+  <a href="https://fretpath.app" style="color: #D4890A;">fretpath.app</a></p>
+</body>
+</html>`
+}
+
+function getDay7Html(planTitle: string, planId: string): string {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #F8F6F2;">
+  <div style="background: #1E2A3A; padding: 20px; border-radius: 8px; margin-bottom: 24px;">
+    <h1 style="color: #D4890A; margin: 0; font-size: 24px;">FretPath</h1>
+    <p style="color: #ffffff99; margin: 4px 0 0; font-size: 14px;">Week 1 complete</p>
+  </div>
+  <div style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e5e5e5;">
+    <h2 style="color: #1E2A3A; margin-top: 0;">How did your first week go?</h2>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">It's been 7 days since you started <strong>${planTitle}</strong>.</p>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">Whether you completed every day or missed a few, the fact that you started puts you ahead. Most guitarists never build a structured practice habit. You did.</p>
+    <p style="color: #666; font-size: 14px; line-height: 1.6;">Ready to keep going? FretPath Pro gives you unlimited plans, a 30-day journey where each week builds on the last, streak tracking, and your full plan history. Start with a 7-day free trial - no charge until day 8.</p>
+  </div>
+  <div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 16px;">
+    <h3 style="color: #1E2A3A; margin-top: 0;">Start your 30-day journey</h3>
+    <a href="https://fretpath.app/pricing" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">Try FretPath Pro free for 7 days</a>
+  </div>
+  <div style="text-align: center; margin-bottom: 24px;">
+    <a href="https://fretpath.app/plan/${planId}" style="color: #D4890A; font-size: 14px;">Or keep using my current plan</a>
+  </div>
+  <p style="color: #999; font-size: 12px; text-align: center;">FretPath - Built for real guitarists<br>
+  <a href="https://fretpath.app" style="color: #D4890A;">fretpath.app</a></p>
+</body>
+</html>`
+}
 export async function POST(req: NextRequest) {
   try {
     const { email, plan, planId } = await req.json()
@@ -24,7 +75,6 @@ export async function POST(req: NextRequest) {
     <h1 style="color: #D4890A; margin: 0; font-size: 24px;">FretPath</h1>
     <p style="color: #ffffff99; margin: 4px 0 0; font-size: 14px;">Your personalized practice plan is ready</p>
   </div>
-
   <div style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e5e5e5;">
     <h2 style="color: #1E2A3A; margin-top: 0;">${plan.plan_title}</h2>
     <div style="display: flex; gap: 8px; margin-bottom: 16px;">
@@ -34,30 +84,27 @@ export async function POST(req: NextRequest) {
     </div>
     <p style="color: #666; font-size: 14px; line-height: 1.6;">${plan.overview}</p>
   </div>
-
   <div style="background: white; padding: 24px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e5e5e5;">
     <h3 style="color: #1E2A3A; margin-top: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Your 7-Day Schedule</h3>
     <ul style="padding-left: 20px; color: #444; font-size: 14px; line-height: 1.8;">
       ${daysSummary}
     </ul>
   </div>
-
   <div style="background: #1E2A3A; padding: 20px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
     <h3 style="color: #D4890A; margin-top: 0;">Weekly Goal</h3>
     <p style="color: #ffffffcc; font-size: 14px; line-height: 1.6; margin-bottom: 0;">${plan.weekly_goal}</p>
   </div>
-
-<div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
+  <div style="background: #D4890A; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 24px;">
     <h3 style="color: #1E2A3A; margin-top: 0;">Open your plan online</h3>
     <p style="color: #1E2A3A99; font-size: 14px; margin-bottom: 16px;">Bookmark this link to revisit your plan anytime.</p>
     <a href="https://fretpath.app/plan/${planId}" style="background: #1E2A3A; color: #D4890A; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;">View your practice plan</a>
   </div>
-
-  <p style="color: #999; font-size: 12px; text-align: center;">FretPath â€” Built for real guitarists<br>
+  <p style="color: #999; font-size: 12px; text-align: center;">FretPath - Built for real guitarists<br>
   <a href="https://fretpath.app" style="color: #D4890A;">fretpath.app</a></p>
 </body>
 </html>`
 
+    // Send Day 1 plan delivery email immediately
     const { data, error } = await resend.emails.send({
       from: "FretPath <onboarding@resend.dev>",
       to: email,
@@ -70,6 +117,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to send email" }, { status: 500 })
     }
 
+    // Schedule Day 3 follow-up (72 hours from now)
+    const day3Time = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
+    resend.emails.send({
+      from: "FretPath <onboarding@resend.dev>",
+      to: email,
+      subject: "Have you practiced yet? Your FretPath plan is waiting",
+      html: getDay3Html(plan.plan_title, planId),
+      scheduledAt: day3Time,
+    }).catch((err) => console.error("Day 3 email schedule failed:", err))
+
+    // Schedule Day 7 follow-up (168 hours from now)
+    const day7Time = new Date(Date.now() + 168 * 60 * 60 * 1000).toISOString()
+    resend.emails.send({
+      from: "FretPath <onboarding@resend.dev>",
+      to: email,
+      subject: "One week in - how's your guitar practice going?",
+      html: getDay7Html(plan.plan_title, planId),
+      scheduledAt: day7Time,
+    }).catch((err) => console.error("Day 7 email schedule failed:", err))
+
     return NextResponse.json({ success: true, id: data?.id })
 
   } catch (error) {
@@ -78,5 +145,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
-
-
