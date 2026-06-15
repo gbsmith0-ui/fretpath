@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
 
     // Send Day 1 plan delivery email immediately
     const { data, error } = await resend.emails.send({
-      from: "FretPath <onboarding@resend.dev>",
+      from: "FretPath <hello@fretpath.app>",
       to: email,
       subject: "Your FretPath practice plan: " + plan.plan_title,
       html: emailHtml,
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
     // Schedule Day 3 follow-up (72 hours from now)
     const day3Time = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
     resend.emails.send({
-      from: "FretPath <onboarding@resend.dev>",
+      from: "FretPath <hello@fretpath.app>",
       to: email,
       subject: "Have you practiced yet? Your FretPath plan is waiting",
       html: getDay3Html(plan.plan_title, planId),
@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
     // Schedule Day 7 follow-up (168 hours from now)
     const day7Time = new Date(Date.now() + 168 * 60 * 60 * 1000).toISOString()
     resend.emails.send({
-      from: "FretPath <onboarding@resend.dev>",
+      from: "FretPath <hello@fretpath.app>",
       to: email,
       subject: "One week in - how's your guitar practice going?",
       html: getDay7Html(plan.plan_title, planId),
