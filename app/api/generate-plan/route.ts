@@ -1,11 +1,13 @@
 ﻿import Anthropic from "@anthropic-ai/sdk"
 import { createClient } from "@supabase/supabase-js"
+import { Resend } from "resend"
 import { NextRequest, NextResponse } from "next/server"
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! })
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+const resend = new Resend(process.env.RESEND_API_KEY!)
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -137,13 +139,38 @@ export async function POST(req: NextRequest) {
     await supabase
       .from("email_subscribers")
       .upsert({ email: email, source: "quiz" }, { onConflict: "email" })
-    fetch((process.env.NEXT_PUBLIC_APP_URL || "https://fretpath.app") + "/api/send-plan-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, plan: planData, planId }),
-    }).catch((emailErr) => {
+    // Send plan delivery email directly
+    const daysSummary = planData.days.map((day: any) =>
+      "<li style='margin-bottom:8px'><strong>" + day.day_name + "</strong> - " + day.focus + " (" + day.total_minutes + " min)</li>"
+    ).join("")
+    try {
+      await resend.emails.send({
+        from: "FretPath <hello@fretpath.app>",
+        to: email,
+        subject: "Your FretPath practice plan: " + planData.plan_title,
+        html: `<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#F8F6F2"><div style="background:#1E2A3A;padding:20px;border-radius:8px;margin-bottom:24px"><h1 style="color:#D4890A;margin:0;font-size:24px">FretPath</h1><p style="color:#ffffff99;margin:4px 0 0;font-size:14px">Your personalized practice plan is ready</p></div><div style="background:white;padding:24px;border-radius:8px;margin-bottom:16px;border:1px solid #e5e5e5"><h2 style="color:#1E2A3A;margin-top:0">${planData.plan_title}</h2><p style="color:#666;font-size:14px;line-height:1.6">${planData.overview}</p></div><div style="background:white;padding:24px;border-radius:8px;margin-bottom:16px;border:1px solid #e5e5e5"><h3 style="color:#1E2A3A;margin-top:0;font-size:14px;text-transform:uppercase">Your 7-Day Schedule</h3><ul style="padding-left:20px;color:#444;font-size:14px;line-height:1.8">${daysSummary}</ul></div><div style="background:#D4890A;padding:20px;border-radius:8px;text-align:center;margin-bottom:24px"><a href="https://fretpath.app/plan/${planId}" style="background:#1E2A3A;color:#D4890A;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px">View your practice plan</a></div><p style="color:#999;font-size:12px;text-align:center">FretPath - Built for real guitarists<br><a href="https://fretpath.app" style="color:#D4890A">fretpath.app</a></p></body>`,
+      })
+      // Schedule Day 3 follow-up
+      const day3Time = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString()
+      await resend.emails.send({
+        from: "FretPath <hello@fretpath.app>",
+        to: email,
+        subject: "Have you practiced yet? Your FretPath plan is waiting",
+        html: `<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#F8F6F2"><div style="background:#1E2A3A;padding:20px;border-radius:8px;margin-bottom:24px"><h1 style="color:#D4890A;margin:0;font-size:24px">FretPath</h1><p style="color:#ffffff99;margin:4px 0 0;font-size:14px">Day 3 check-in</p></div><div style="background:white;padding:24px;border-radius:8px;margin-bottom:16px;border:1px solid #e5e5e5"><h2 style="color:#1E2A3A;margin-top:0">Have you practiced yet?</h2><p style="color:#666;font-size:14px;line-height:1.6">You generated your FretPath plan 3 days ago: <strong>${planData.plan_title}</strong></p><p style="color:#666;font-size:14px;line-height:1.6">Even 15 minutes today counts. Open your plan, do Day 1, log your session, and watch your streak start.</p></div><div style="background:#D4890A;padding:20px;border-radius:8px;text-align:center;margin-bottom:24px"><a href="https://fretpath.app/plan/${planId}" style="background:#1E2A3A;color:#D4890A;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px">Open my practice plan</a></div><p style="color:#999;font-size:12px;text-align:center">FretPath - Built for real guitarists<br><a href="https://fretpath.app" style="color:#D4890A">fretpath.app</a></p></body>`,
+        scheduledAt: day3Time,
+      })
+      // Schedule Day 7 follow-up
+      const day7Time = new Date(Date.now() + 168 * 60 * 60 * 1000).toISOString()
+      await resend.emails.send({
+        from: "FretPath <hello@fretpath.app>",
+        to: email,
+        subject: "One week in - how is your guitar practice going?",
+        html: `<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;background:#F8F6F2"><div style="background:#1E2A3A;padding:20px;border-radius:8px;margin-bottom:24px"><h1 style="color:#D4890A;margin:0;font-size:24px">FretPath</h1><p style="color:#ffffff99;margin:4px 0 0;font-size:14px">Week 1 complete</p></div><div style="background:white;padding:24px;border-radius:8px;margin-bottom:16px;border:1px solid #e5e5e5"><h2 style="color:#1E2A3A;margin-top:0">How did your first week go?</h2><p style="color:#666;font-size:14px;line-height:1.6">It has been 7 days since you started <strong>${planData.plan_title}</strong>.</p><p style="color:#666;font-size:14px;line-height:1.6">Ready to keep going? FretPath Pro gives you unlimited plans, a 30-day journey, streak tracking, and your full plan history. Start with a 7-day free trial.</p></div><div style="background:#D4890A;padding:20px;border-radius:8px;text-align:center;margin-bottom:16px"><a href="https://fretpath.app/pricing" style="background:#1E2A3A;color:#D4890A;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px">Try FretPath Pro free for 7 days</a></div><p style="color:#999;font-size:12px;text-align:center">FretPath - Built for real guitarists<br><a href="https://fretpath.app" style="color:#D4890A">fretpath.app</a></p></body>`,
+        scheduledAt: day7Time,
+      })
+    } catch (emailErr) {
       console.error("Email send failed:", emailErr)
-    })
+    }
     return NextResponse.json({ planId, plan: planData, email })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to generate plan"
@@ -151,3 +178,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
+
+
