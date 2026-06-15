@@ -61,13 +61,14 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
   const [generatingWeek, setGeneratingWeek] = useState(false)
   const [nextWeekId, setNextWeekId] = useState<string | null>(null)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [shared, setShared] = useState(false)
   const resolvedParams = React.use(params)
   const supabaseBrowserRef = useRef(createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   ))
   const supabaseBrowser = supabaseBrowserRef.current
-  useEffect(() => {
+useEffect(() => {
     async function loadPlan() {
       const sessionData = sessionStorage.getItem('fretpath_plan')
       if (sessionData) {
@@ -121,7 +122,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     }
     loadPlan()
     checkAuth()
-    // Show onboarding only on first ever plan visit
     const hasSeen = localStorage.getItem('fretpath_onboarding_seen')
     if (!hasSeen) setShowOnboarding(true)
   }, [resolvedParams.id])
@@ -199,12 +199,27 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
     setShowOnboarding(false)
   }
 
+  async function handleShare() {
+    const shareMessage = "I've been using FretPath to build a structured guitar practice routine - it generates personalized 7-day plans around your skill level and goals. Try it free: https://fretpath.app"
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'FretPath - AI Guitar Practice Plans', text: shareMessage, url: 'https://fretpath.app' })
+        setShared(true)
+        setTimeout(() => setShared(false), 3000)
+      } catch { }
+    } else {
+      await navigator.clipboard.writeText(shareMessage)
+      setShared(true)
+      setTimeout(() => setShared(false), 3000)
+    }
+  }
+
   function copyLink() {
     navigator.clipboard.writeText(window.location.href)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
-  if (loading) {
+if (loading) {
     return (
       <div className="min-h-screen bg-[#F8F6F2] flex items-center justify-center">
         <div className="text-center">
@@ -232,7 +247,6 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
         <a href="/" className="bg-[#1E2A3A] text-[#D4890A] font-semibold text-base px-3 py-1 rounded-md">FretPath</a>
       </nav>
       <div className="max-w-2xl mx-auto px-4 py-10">
-        <div className="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
         {showOnboarding && (
           <div className="bg-[#1E2A3A] rounded-xl p-5 mb-6 relative">
             <button onClick={dismissOnboarding} className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors text-lg leading-none">x</button>
@@ -257,7 +271,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             <button onClick={dismissOnboarding} className="mt-4 text-xs text-white/40 hover:text-white/60 transition-colors">Got it, hide this</button>
           </div>
         )}
-
+        <div className="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
           <div className="flex items-start justify-between gap-4 mb-4">
             <div>
               <div className="text-xs font-semibold text-[#D4890A] uppercase tracking-wider mb-1">Your Practice Plan</div>
@@ -327,7 +341,7 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             </div>
           ))}
         </div>
-      {isPro && packId && weekNumber && weekNumber < 4 && (
+{isPro && packId && weekNumber && weekNumber < 4 && (
           <div className="bg-white rounded-xl border border-[#D4890A]/30 p-5 mb-4">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -376,6 +390,13 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
             )}
           </div>
         )}
+        <div className="bg-white rounded-xl border border-neutral-200 p-5 mb-4 text-center">
+          <p className="text-sm font-semibold text-[#1E2A3A] mb-1">Know a guitarist who needs this?</p>
+          <p className="text-xs text-neutral-500 mb-4">Share FretPath with a friend - it is free to try.</p>
+          <button onClick={handleShare} className="bg-[#1E2A3A] text-[#D4890A] font-semibold text-sm px-6 py-2.5 rounded-lg hover:bg-[#162030] transition-colors">
+            {shared ? 'Link copied!' : 'Share with a guitarist friend'}
+          </button>
+        </div>
         <div className="bg-[#1E2A3A] rounded-xl p-6 text-center">
           {isPro ? (
             <div>
@@ -393,4 +414,4 @@ export default function PlanPage({ params }: { params: Promise<{ id: string }> }
       </div>
     </div>
   )
-}  
+}            
